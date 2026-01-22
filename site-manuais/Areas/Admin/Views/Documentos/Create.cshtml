@@ -1,0 +1,97 @@
+@model site_manuais.Models.Documento
+
+@{
+    ViewData["Title"] = "Novo Documento";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">
+                <i class="bi bi-cloud-upload"></i> Enviar Documento
+            </h1>
+            <p class="text-muted">Faça upload de um arquivo PDF</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-area="Admin" asp-controller="Documentos" asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="ModuloId" class="form-label">Módulo *</label>
+                            <select asp-for="ModuloId" class="form-select" asp-items="ViewBag.ModuloId">
+                                <option value="">-- Selecione um Módulo --</option>
+                            </select>
+                            <span asp-validation-for="ModuloId" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Titulo" class="form-label">Título do Documento *</label>
+                            <input asp-for="Titulo" class="form-control" placeholder="Ex: Como cadastrar um novo cliente" />
+                            <span asp-validation-for="Titulo" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Descricao" class="form-label">Descrição (Opcional)</label>
+                            <textarea asp-for="Descricao" class="form-control" rows="3" 
+                                      placeholder="Descreva brevemente o conteúdo deste documento..."></textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="arquivo" class="form-label">Arquivo PDF *</label>
+                            <input type="file" class="form-control" id="arquivo" name="arquivo" accept=".pdf,application/pdf" />
+                            <div class="form-text">Tamanho máximo: 10MB | Apenas arquivos PDF</div>
+                            <span class="text-danger">@ViewData.ModelState["arquivo"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-area="Admin" asp-controller="Documentos" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-cloud-upload"></i> Enviar Documento
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Instruções
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Apenas arquivos PDF são aceitos
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Tamanho máximo de 10MB
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Escolha um título descritivo
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            O arquivo será armazenado com segurança
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

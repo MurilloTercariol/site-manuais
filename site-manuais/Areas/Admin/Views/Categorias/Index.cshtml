@@ -1,0 +1,92 @@
+﻿@model IEnumerable<site_manuais.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">
+                <i class="bi bi-folder"></i> Categorias
+            </h1>
+            <p class="text-muted">Gerencie as categorias de documentação do sistema</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Criar Nova Categoria
+            </a>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Nome)</th>
+                                <th>@Html.DisplayNameFor(model => model.Descricao)</th>
+                                <th>@Html.DisplayNameFor(model => model.DataCriacao)</th>
+                                <th>Última alteração</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><strong>@Html.DisplayFor(modelItem => item.Nome)</strong></td>
+                                    <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
+                                    <td>@item.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (item.DataUltimaAlteracao.HasValue)
+                                        {
+                                            <small class="text-muted">
+                                                <i class="bi bi-pencil-square"></i>
+                                                @item.DataUltimaAlteracao.Value.ToString("dd/MM/yyyy HH:mm")
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">—</small>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-info" title="Ver Detalhes">
+                                                <i class="bi bi-eye"></i> Detalhes
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-warning" title="Editar">
+                                                <i class="bi bi-pencil"></i> Editar
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" 
+                                               class="btn btn-sm btn-danger" title="Deletar">
+                                                <i class="bi bi-trash"></i> Deletar
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> 
+            <strong>Nenhuma categoria cadastrada.</strong> 
+            Clique no botão acima para criar a primeira categoria.
+        </div>
+    }
+</div>
