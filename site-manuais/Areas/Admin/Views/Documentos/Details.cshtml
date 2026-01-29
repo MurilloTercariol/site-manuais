@@ -1,0 +1,113 @@
+﻿@model site_manuais.Models.Documento
+
+@{
+    ViewData["Title"] = "Detalhes do Documento";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">
+                <i class="bi bi-file-earmark-text"></i> Detalhes do Documento
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">
+                        <i class="bi bi-file-pdf text-danger"></i>
+                        @Model.Titulo
+                    </h3>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Descrição:</dt>
+                        <dd class="col-sm-9">@(Model.Descricao ?? "—")</dd>
+
+                        <dt class="col-sm-3">Categoria:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-info">
+                                <i class="bi bi-folder"></i>
+                                @Model.Modulo.Categoria.Nome
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Módulo:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-primary">
+                                <i class="bi bi-grid-3x3"></i>
+                                @Model.Modulo.Nome
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Nome do Arquivo:</dt>
+                        <dd class="col-sm-9">
+                            <code>@Model.NomeArquivoOriginal</code>
+                        </dd>
+
+                        <dt class="col-sm-3">Tamanho:</dt>
+                        <dd class="col-sm-9">
+                            @{
+                                var tamanhoKB = Model.TamanhoArquivo / 1024.0;
+                                var tamanhoMB = tamanhoKB / 1024.0;
+                                var tamanhoFormatado = tamanhoMB >= 1
+                                ? $"{tamanhoMB:F2} MB"
+                                : $"{tamanhoKB:F2} KB";
+                            }
+                            <strong>@tamanhoFormatado</strong>
+                        </dd>
+
+                        <dt class="col-sm-3">Data de Upload:</dt>
+                        <dd class="col-sm-9">
+                            <i class="bi bi-calendar-plus"></i>
+                            @Model.DataUpload.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        @if (Model.DataUltimaAlteracao.HasValue)
+                        {
+                            <dt class="col-sm-3">Última Alteração:</dt>
+                            <dd class="col-sm-9">
+                                <i class="bi bi-pencil-square"></i>
+                                @Model.DataUltimaAlteracao.Value.ToString("dd/MM/yyyy HH:mm")
+                            </dd>
+                        }
+                    </dl>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                        <div>
+                            <a asp-area="Admin" asp-controller="Documentos" asp-action="Download" asp-route-id="@Model.Id" class="btn btn-success" target="_blank">
+                                <i class="bi bi-download"></i> Download do PDF
+                            </a>
+                        </div>
+                        <div>
+                            <a asp-area="Admin" asp-controller="Documentos" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <a asp-area="Admin" asp-controller="Documentos" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a asp-area="Admin" asp-controller="Documentos" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Deletar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Caminho do Arquivo
+                    </h5>
+                    <p class="mb-0">
+                        <small class="text-muted font-monospace">@Model.CaminhoArquivo</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
