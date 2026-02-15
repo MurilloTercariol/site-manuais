@@ -4,7 +4,7 @@ using site_manuais.Models;
 
 namespace site_manuais.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         // Construtor que recebe as opções de configurações do banco
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
