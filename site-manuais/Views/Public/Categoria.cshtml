@@ -3,3 +3,115 @@
 @{
     ViewData["Title"] = $"Módulos - {Model.Nome}";
 }
+
+<div class="container mt-5">
+    <!-- BREADCRUMB PARA NAVEGAÇÃO -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Public" asp-action="Index">
+                    <i class="bi bi-house"></i> Início
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @Model.Nome
+            </li>
+        </ol>
+    </nav>
+
+    <!-- CABEÇALHO DA CATEGORIA -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">
+                <i class="bi bi-folder-open text-primary"></i>
+                @Model.Nome
+            </h1>
+
+            @if (!string.IsNullOrEmpty(Model.Descricao))
+            {
+                <p class="lead text-muted">@Model.Descricao</p>
+            }
+
+            <hr>
+        </div>
+    </div>
+
+    <!-- VERIFICAR SE HÁ MÓDULOS -->
+    @if (Model.Modulos.Any())
+    {
+        <!-- GRID DE MÓDULOS -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 b-3">
+            @foreach (var modulo in Model.Modulos.OrderBy(m => m.Nome))
+            {
+                <div class="col">
+                    <!-- CARD DO MÓDULO -->
+                    <div class="card h-100 shadow-sm hover-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="bi bi-grid-3x3 text-success"></i>
+                                @modulo.Nome
+                            </h5>
+
+                            <!-- DESCRIÇÃO DO MÓDULO -->
+                            @if (!string.IsNullOrEmpty(modulo.Descricao))
+                            {
+                                <p class="card-text text-muted">
+                                    @modulo.Descricao
+                                </p>
+                            }
+
+                            <!-- BADGE COM QUANTIDADE DE DOCUMENTOS -->
+                            <div class="mb-3">
+                                <span class="badge bg-warning text-dark">
+                                    @modulo.Documentos.Count
+                                    @(modulo.Documentos.Count == 1 ? "documento" : "documentos")
+                                </span>
+                            </div>
+
+                            <!-- BOTÃO PARA VER DOCUMENTOS -->
+                            <a asp-controller="Public"
+                               asp-action="Modulo"
+                               asp-route-id="@modulo.Id"
+                               class="btn btn-success w-100">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Ver Documentos
+                            </a>
+                        </div>
+
+                        <!-- RODAPÉ COM DATA DE CRIAÇÃO -->
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-plus"></i>
+                                Criado em @modulo.DataCriacao.ToString("dd/MM/yyyy")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- MENSAGEM SE NÃO HOUVER MÓDULOS -->
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>Esta categoria ainda não possui módulos cadastrados.</strong>
+        </div>
+
+        <a asp-controller="Public" asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para Categorias
+        </a>
+    }
+</div>
+
+<!-- CSS CUSTOMIZADO -->
+<style>
+    .hover-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+        }
+</style>
