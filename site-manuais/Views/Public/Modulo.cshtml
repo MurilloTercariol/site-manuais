@@ -1,0 +1,23 @@
+﻿@model site_manuais.Models.Modulo
+    
+@{
+    ViewData["Title"] = $"Documentos - {Model.Nome}";
+}
+
+<div class="container mt-5">
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Public" asp-action="Index">
+                    <i class="bi bi-house"></i> Início
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Public" asp-action="Categoria" asp-route-id="@Model.CategoriaId">
+                    @Model.Categoria.Nome
+                </a>
+            </li>
+        </ol>
+    </nav>
+</div>
