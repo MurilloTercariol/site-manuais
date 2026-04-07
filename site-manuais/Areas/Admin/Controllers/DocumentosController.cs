@@ -18,11 +18,12 @@ namespace site_manuais.Areas.Admin.Controllers
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            
         }
-
         // GET: Admin/Documentos
         public async Task<IActionResult> Index()
         {
+            Console.WriteLine("Acessando Index");
             var documentos = await _context.Documentos
                 .Include(d => d.Modulo)
                 .ThenInclude(m => m.Categoria)
@@ -54,20 +55,33 @@ namespace site_manuais.Areas.Admin.Controllers
         }
 
         // GET: Admin/Documentos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // Carregar módulos com suas categorias para exibir no dropdown
-            var modulos = _context.Modulos
-                .Include(m => m.Categoria)
-                .Select(m => new
-                {
-                    m.Id,
-                    NomeCompleto = m.Categoria.Nome + " → " + m.Nome
-                })
-                .ToList();
+            try
+            {
+                // Carregar módulos com suas categorias para exibir no dropdown
+                var modulos = await _context.Modulos
+                    .Include(m => m.Categoria)
+                    .OrderBy(m => m.Categoria.Nome)
+                    .ThenBy(m => m.Nome)
+                    .Select(m => new
+                    {
+                        m.Id,
+                        NomeCompleto = m.Categoria.Nome + " - " + m.Nome // 
+                    })
+                    .ToListAsync(); // 
 
-            ViewBag.ModuloId = new SelectList(modulos, "Id", "NomeCompleto");
-            return View();
+                ViewBag.ModuloId = new SelectList(modulos, "Id", "NomeCompleto");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Log do erro para debug
+                Console.WriteLine($"Erro ao carregar módulos: {ex.Message}");
+                ViewBag.ModuloId = new SelectList(new List<object>(), "Id", "NomeCompleto");
+                ModelState.AddModelError("", "Erro ao carregar módulos. Tente novamente.");
+                return View();
+            }
         }
 
         // POST: Admin/Documentos/Create
@@ -101,7 +115,7 @@ namespace site_manuais.Areas.Admin.Controllers
                     // Gerar nome único para o arquivo
                     var extensao = Path.GetExtension(arquivo.FileName);
                     var nomeArquivo = $"{Guid.NewGuid()}{extensao}";
-                    
+
                     // Caminho completo onde salvar
                     var uploadsPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "documentos");
                     var arquivoPath = Path.Combine(uploadsPath, nomeArquivo);
@@ -121,27 +135,57 @@ namespace site_manuais.Areas.Admin.Controllers
                     documento.TamanhoArquivo = arquivo.Length;
                     documento.DataUpload = DateTime.Now;
 
-                    _context.Add(documento);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    // IMPORTANTE: Usar transaction para garantir consistência
+                    using var transaction = await _context.Database.BeginTransactionAsync();
+                    try
+                    {
+                        _context.Add(documento);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+
+                        // Deletar arquivo se houve erro no banco
+                        if (System.IO.File.Exists(arquivoPath))
+                        {
+                            System.IO.File.Delete(arquivoPath);
+                        }
+
+                        throw new Exception($"Erro ao salvar no banco: {ex.Message}", ex);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Erro ao salvar arquivo: {ex.Message}");
+                    Console.WriteLine($"Erro completo: {ex}");
+                    ModelState.AddModelError("", $"Erro ao salvar documento: {ex.Message}");
                 }
             }
 
             // Recarregar dropdown em caso de erro
-            var modulos = _context.Modulos
-                .Include(m => m.Categoria)
-                .Select(m => new
-                {
-                    m.Id,
-                    NomeCompleto = m.Categoria.Nome + " → " + m.Nome
-                })
-                .ToList();
+            try
+            {
+                var modulos = await _context.Modulos
+                    .Include(m => m.Categoria)
+                    .OrderBy(m => m.Categoria.Nome)
+                    .ThenBy(m => m.Nome)
+                    .Select(m => new
+                    {
+                        m.Id,
+                        NomeCompleto = m.Categoria.Nome + " - " + m.Nome
+                    })
+                    .ToListAsync();
 
-            ViewBag.ModuloId = new SelectList(modulos, "Id", "NomeCompleto", documento.ModuloId);
+                ViewBag.ModuloId = new SelectList(modulos, "Id", "NomeCompleto", documento.ModuloId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao recarregar módulos: {ex.Message}");
+                ViewBag.ModuloId = new SelectList(new List<object>(), "Id", "NomeCompleto");
+            }
+
             return View(documento);
         }
 
@@ -333,5 +377,4 @@ namespace site_manuais.Areas.Admin.Controllers
         }
     }
 }
-
 

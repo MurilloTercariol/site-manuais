@@ -31,12 +31,15 @@ namespace site_manuais.Controllers
         }
 
         //GET: /Public/Categoria/5
+
+
         // Mostra Modulos de uma categoria
 
         public async Task<IActionResult> Categoria(int id)
         {
             var categoria = await _context.Categorias
                 .Include(c => c.Modulos)
+                    .ThenInclude(m => m.Documentos)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (categoria == null)
@@ -87,6 +90,7 @@ namespace site_manuais.Controllers
 
         public async Task<IActionResult> Buscar(string termo)
         {
+            ViewData["Title"] = "Resultados da Busca";
             if (string.IsNullOrWhiteSpace(termo))
             {
                 //se tiver em brano mostra tudo
@@ -133,8 +137,10 @@ namespace site_manuais.Controllers
 
             var arquivoBytes = await System.IO.File.ReadAllBytesAsync(caminhoArquivo);
 
-            return File(arquivoBytes, "application/pdf");
+            // Força o download com o nome original do arquivo
+            return File(arquivoBytes, "application/pdf", documento.NomeArquivoOriginal);
         }
+
 
 
 

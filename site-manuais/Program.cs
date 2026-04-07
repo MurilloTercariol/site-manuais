@@ -68,8 +68,16 @@ app.MapControllerRoute(
 // Seed usuário admin
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    await DbInitializer.SeedAdminUser(services);
+    try
+    {
+        var services = scope.ServiceProvider;
+        await DbInitializer.SeedAdminUser(services);
+    }
+        catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao criar usuário admin: {ex.Message}");
+        // Não pare a aplicação por causa disso
+    }
 }
 
 app.Run();

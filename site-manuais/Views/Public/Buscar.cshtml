@@ -1,0 +1,163 @@
+﻿@model IEnumerable<site_manuais.Models.Documento>
+@{
+    ViewData["Title"] = "Resultados da Busca";
+    var termo = ViewBag.TermoBusca as string;
+    var total = (int)ViewBag.TotalResultados;
+}
+
+<div class="container mt-5">
+    <!--HEADER BUSCA-->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Public" asp-action="Index">
+                            <i class="bi bi-house"></i> Início
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Resultados da Busca</li>
+                </ol>
+            </nav>
+
+            <h2><i class="bi bi-search"></i> Resultados da busca</h2>
+            <p class="lead">
+                Você pesquisou por: <span class="text-primary fw-bold">"@termo"</span>
+            </p>
+            <p class="text-muted">
+                @total @(total == 1 ? "documento encontrado" : "documentos encontrados")
+            </p>
+        </div>
+    </div>
+</div>
+
+<!--NOVA BUSCA-->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-search"></i>Nova Busca</h5>
+                <form asp-controller="Public" asp-action="Buscar" method="get">
+                    <div class="input-group">
+                        <input type="text" name="termo" class="form-control"
+                        placeholder="Digite um termo para buscar..." value="@termo" />
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RESULTADOPS-->
+@if (!Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        <i class="bi bi-info-circle"></i>
+        <strong>Nenhum documento encontrado.</strong>
+        Tente usar termos diferentes ou consulte todas as
+        <a asp-controller="Public" asp-action="Index" class="alert-link">Categorias disponíveis</a>
+    </div>
+}
+else
+{
+       <div class="row">
+            @foreach (var doc in Model.Select((value, i) => new { i, value }))
+            {
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title">
+                                        <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                        <a asp-controller="Public" asp-action="Documento" asp-route-id="@doc.value.Id"
+                                           class="text-decoration-none">
+                                            @doc.value.Titulo
+                                        </a>
+                                    </h5>
+
+                                    @if (!string.IsNullOrEmpty(doc.value.Descricao))
+                                    {
+                                        <p class="card-text text-muted mb-2">@doc.value.Descricao</p>
+                                    }
+
+                                    <!-- BREADCRUMB DO DOCUMENTO -->
+                                    <nav aria-label="Localização do documento">
+                                        <ol class="breadcrumb mb-2">
+                                            <li class="breadcrumb-item">
+                                                <a asp-controller="Public" asp-action="Categoria"
+                                                   asp-route-id="@doc.value.Modulo.CategoriaId">
+                                                    <i class="bi bi-folder"></i> @doc.value.Modulo.Categoria.Nome
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item">
+                                                <a asp-controller="Public" asp-action="Modulo"
+                                                   asp-route-id="@doc.value.ModuloId">
+                                                    <i class="bi bi-grid-3x3"></i> @doc.value.Modulo.Nome
+                                                </a>
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> @doc.value.DataUpload.ToString("dd/MM/yyyy") •
+                                        <i class="bi bi-hdd"></i> @((doc.value.TamanhoArquivo / 1024.0 / 1024.0).ToString("F2")) MB
+                                    </small>
+                                </div>
+
+                                <!-- BOTÕES DE AÇÃO -->
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-primary btn-sm" onclick="togglePdfViewer(@doc.i)">
+                                        <i class="bi bi-eye"></i> <span id="btnText-@doc.i">Visualizar</span>
+                                    </button>
+                                    <a class="btn btn-success btn-sm" asp-controller="Public"
+                                       asp-action="Download" asp-route-id="@doc.value.Id">
+                                        <i class="bi bi-download"></i> Download
+                                    </a>
+                                    <a class="btn btn-info btn-sm" asp-controller="Public"
+                                       asp-action="Documento" asp-route-id="@doc.value.Id">
+                                        <i class="bi bi-info-circle"></i> Detalhes
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- VISUALIZADOR INLINE DO PDF -->
+                            <div id="pdfViewer-@doc.i" class="mt-3" style="display: none;">
+                                <hr>
+                                <embed src="@doc.value.CaminhoArquivo" type="application/pdf" width="100%" height="600px" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function togglePdfViewer(index) {
+            const viewer = document.getElementById('pdfViewer-' + index);
+            const btnText = document.getElementById('btnText-' + index);
+            const btn = btnText.parentElement;
+            const btnIcon = btn.querySelector('i');
+
+            if (viewer.style.display === 'none') {
+                viewer.style.display = 'block';
+                btnText.textContent = 'Ocultar';
+                btnIcon.className = 'bi bi-eye-slash';
+
+                setTimeout(() => {
+                    viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                viewer.style.display = 'none';
+                btnText.textContent = 'Visualizar';
+                btnIcon.className = 'bi bi-eye';
+            }
+        }
+    </script>
+}

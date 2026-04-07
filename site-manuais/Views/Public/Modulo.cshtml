@@ -1,5 +1,5 @@
 ﻿@model site_manuais.Models.Modulo
-    
+
 @{
     ViewData["Title"] = $"Documentos - {Model.Nome}";
 }
@@ -18,6 +18,102 @@
                     @Model.Categoria.Nome
                 </a>
             </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @Model.Nome
+            </li>
         </ol>
     </nav>
+
+    <!-- Título do Modulo -->
+    <h2>@Model.Nome</h2>
+    <p class="text-muted">@Model.Descricao</p>
+
+    <!-- Lista de documentos -->
+    <h4 class="mt-4">Documentos</h4>
+    @if (Model.Documentos != null && Model.Documentos.Any())
+    {
+        <div class="row">
+            @foreach (var doc in Model.Documentos.Select((value, i) => new { i, value }))
+            {
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-1">
+                                        <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                        @doc.value.Titulo
+                                    </h5>
+                                    @if (!string.IsNullOrEmpty(doc.value.Descricao))
+                                    {
+                                        <p class="card-text text-muted mb-2">@doc.value.Descricao</p>
+                                    }
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> @doc.value.DataUpload.ToString("dd/MM/yyyy") •
+                                        <i class="bi bi-hdd"></i> @((doc.value.TamanhoArquivo / 1024.0 / 1024.0).ToString("F2")) MB
+                                    </small>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-sm" onclick="togglePdfViewer(@doc.i)">
+                                        <i class="bi bi-eye"></i> <span id="btnText-@doc.i">Visualizar</span>
+                                    </button>
+                                    <a class="btn btn-success btn-sm" asp-controller="Public" asp-action="Download" asp-route-id="@doc.value.Id">
+                                        <i class="bi bi-download"></i> Download
+                                    </a>
+                                    <a class="btn btn-info btn-sm" asp-controller="Public" asp-action="Documento" asp-route-id="@doc.value.Id">
+                                        <i class="bi bi-info-circle"></i> Detalhes
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Visualizador inline do PDF -->
+                            <div id="pdfViewer-@doc.i" class="mt-3" style="display: none;">
+                                <hr>
+                                <embed src="@doc.value.CaminhoArquivo" type="application/pdf" width="100%" height="600px" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">
+            <p class="text-muted mb-0">
+                <i class="bi bi-info-circle"></i>
+                Nenhum documento disponível para este módulo.
+            </p>
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <script>
+        function togglePdfViewer(index) {
+            const viewer = document.getElementById('pdfViewer-' + index);
+            const btnText = document.getElementById('btnText-' + index);
+            const btn = btnText.parentElement;
+            const btnIcon = btn.querySelector('i');
+
+            if (viewer.style.display === 'none') {
+                viewer.style.display = 'block';
+                btnText.textContent = 'Ocultar';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-danger');
+                btnIcon.className = 'bi bi-eye-slash';
+
+                // Scroll suave para o visualizador
+                setTimeout(() => {
+                    viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            } else {
+                viewer.style.display = 'none';
+                btnText.textContent = 'Visualizar';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-primary');
+                btnIcon.className = 'bi bi-eye';
+            }
+        }
+    </script>
+}

@@ -61,7 +61,7 @@ namespace site_manuais.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Public", new { area = ""});
         }
 
         //GET: /Account/AcessDenied

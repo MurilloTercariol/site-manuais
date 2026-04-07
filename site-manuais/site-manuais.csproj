@@ -10,6 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Admin\Views\Shared\**" />
+    <Content Remove="Areas\Admin\Views\Shared\**" />
+    <EmbeddedResource Remove="Areas\Admin\Views\Shared\**" />
+    <None Remove="Areas\Admin\Views\Shared\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Public\Buscar.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
       <PrivateAssets>all</PrivateAssets>
