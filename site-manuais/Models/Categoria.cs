@@ -1,4 +1,6 @@
-﻿namespace site_manuais.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace site_manuais.Models
 {
     public class Categoria
     {
@@ -16,6 +18,9 @@
 
         public DateTime? DataUltimaAlteracao { get; set; }
 
+        [Display(Name = "Cor")]
+        [StringLength(9)]
+        public string? Cor { get; set; } = "#0000ff";
         // Relacionamento categoria 1 para n módulos
         public ICollection<Modulo> Modulos { get; set; } = new List<Modulo>();
     }

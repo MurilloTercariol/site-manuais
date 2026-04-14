@@ -57,7 +57,7 @@ namespace site_manuais.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao")] Categoria categoria)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Cor")] Categoria categoria)
         {
             if (ModelState.IsValid)
             {
@@ -93,7 +93,7 @@ namespace site_manuais.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,DataCriacao")] Categoria categoria)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,DataCriacao,Cor")] Categoria categoria)
         {
             if (id != categoria.Id)
             {

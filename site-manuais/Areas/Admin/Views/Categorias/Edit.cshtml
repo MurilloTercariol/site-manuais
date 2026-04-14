@@ -23,6 +23,36 @@
                 <input asp-for="Descricao" class="form-control" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
+            <div class="form-group mb-3">
+                <label asp-for="Cor" class="form-label">Cor da Categoria</label>
+                <div class="d-flex gap-5">
+                    <label>
+                        <input type="radio" asp-for="Cor" value="#cc0606" checked="@(Model?.Cor == "#cc0606")" />
+                        <span style="display:inline-block;width:24px;height:24px;background:#cc0606;border-radius:50%;border:2px solid #cccccc;"></span>
+                        Vermelho
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="Cor" value="#0202a1" checked="@(Model?.Cor == "#0202a1")" />
+                        <span style="display:inline-block;width:24px;height:24px;background:#0202a1;border-radius:50%;border:2px solid #cccccc;"></span>
+                        Azul
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="Cor" value="#0b6b04" checked="@(Model?.Cor == "#0b6b04")" />
+                        <span style="display:inline-block;width:24px;height:24px;background:#0b6b04;border-radius:50%;border:2px solid #cccccc;"></span>
+                        Verde
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="Cor" value="#ff7f2a" checked="@(Model?.Cor == "#ff7f2a")" />
+                        <span style="display:inline-block;width:24px;height:24px;background:#ff7f2a;border-radius:50%;border:2px solid #cccccc;"></span>
+                        Laranja
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="Cor" value="#6e016e" checked="@(Model?.Cor == "#6e016e")" />
+                        <span style="display:inline-block;width:24px;height:24px;background:#6e016e;border-radius:50%;border:2px solid #cccccc;"></span>
+                        Roxo
+                    </label>
+                </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>

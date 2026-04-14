@@ -45,7 +45,7 @@
                     <div class="card h-100 shadow-sm hover-card">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <i class="bi bi-folder text-primary"></i>
+                                <i class="bi bi-folder" style="color:@categoria.Cor"></i>
                                 @categoria.Nome
                             </h5>
 
@@ -59,7 +59,8 @@
 
                             <!-- BADGE COM QUANTIDADE DE MÓDULOS -->
                             <div class="mb-3">
-                                <span class="badge bg-info">
+                                <span class="badge" style="background:@categoria.Cor; color:#fff;">
+                                    @categoria.Nome
                                     @categoria.Modulos.Count
                                     @(categoria.Modulos.Count == 1 ? "módulo" : "módulos")
                                 </span>
@@ -69,7 +70,8 @@
                             <a asp-controller="Public"
                                asp-action="Categoria"
                                asp-route-id="@categoria.Id"
-                               class="btn btn-primary w-100">
+                               class="btn btn-primary w-100"
+                               style="background:@categoria.Cor; color:#fff;">
                                 <i class="bi bi-arrow-right-circle"></i>
                                 Ver Módulos
                             </a>
