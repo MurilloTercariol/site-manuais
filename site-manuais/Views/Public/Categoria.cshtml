@@ -48,7 +48,7 @@
                     <div class="card h-100 shadow-sm hover-card">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <i class="bi bi-grid-3x3 text-success"></i>
+                                <i class="bi bi-grid-3x3" style="color:@Model.Cor"></i>
                                 @modulo.Nome
                             </h5>
 
@@ -62,7 +62,7 @@
 
                             <!-- BADGE COM QUANTIDADE DE DOCUMENTOS -->
                             <div class="mb-3">
-                                <span class="badge bg-warning text-dark">
+                                <span class="badge text-white" style="background-color:@Model.Cor; color: #fff; border: none;">
                                     @modulo.Documentos.Count
                                     @(modulo.Documentos.Count == 1 ? "documento" : "documentos")
                                 </span>
@@ -72,7 +72,8 @@
                             <a asp-controller="Public"
                                asp-action="Modulo"
                                asp-route-id="@modulo.Id"
-                               class="btn btn-success w-100">
+                               class="btn w-100 categoria-btn"
+                               style="background-color:@Model.Cor; color: #fff; border: none;">
                                 <i class="bi bi-file-earmark-text"></i>
                                 Ver Documentos
                             </a>
@@ -114,4 +115,8 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
         }
+
+      .btn.categoria-btn:hover {
+        filter: brightness(0.9);
+    }
 </style>

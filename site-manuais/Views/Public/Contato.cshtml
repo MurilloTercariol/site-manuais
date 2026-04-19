@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewData["Title"] = "Contato";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2>Entre em Contato</h2>
+        <p class="text-muted">
+            Pronto para transformar sua ideia em realidade? Fale conosco e descubra como podemos ajudar seu negócio a crescer.
+        </p>
+    </div>
+
+    <div class="row">
+
+        <!-- LADO ESQUERDO -->
+        <div class="col-md-4 mb-4">
+            <div class="bg-light p-4 rounded h-100">
+                <h4>Vamos conversar!</h4>
+                <p class="text-muted">
+                    Nossa equipe está pronta para entender suas necessidades e propor a melhor solução.
+                </p>
+
+                <hr />
+
+                <p>
+                    <strong>📍 Endereço</strong><br />
+                    Av. Maria de Jesus Condeixa, 600<br />
+                    Ribeirão Preto - SP
+                </p>
+
+                <p>
+                    <strong>📞 Telefone</strong><br />
+                    (16) 99158-9900
+                </p>
+
+                <p>
+                    <strong>📧 E-mail</strong><br />
+                    atendimento@tzsolucoes.com.br
+                </p>
+
+                <div class="bg-white p-3 rounded mt-3">
+                    <strong>Horário</strong><br />
+                    Seg-Sex: 07:45 - 18:30<br />
+                    Sábado: 08:00 - 12:00<br />
+                    Urgente: 24/7
+                </div>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <form id="form-whatsapp">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nome *</label>
+                                <input id="Nome" class="form-control" placeholder="Seu nome completo" required />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Telefone</label>
+                                <input id="Telefone" class="form-control" placeholder="(16) 99999-9999" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">E-mail *</label>
+                            <input id="Email" type="email" class="form-control" placeholder="seu@email.com" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Assunto *</label>
+                            <select id="Assunto" class="form-select" required>
+                                <option value="">Selecione um assunto</option>
+                                <option>Orçamento</option>
+                                <option>Suporte</option>
+                                <option>Dúvida</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mensagem *</label>
+                            <textarea id="Mensagem" class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Enviar Mensagem
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("form-whatsapp").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById("Nome").value;
+            const telefone = document.getElementById("Telefone").value;
+            const email = document.getElementById("Email").value;
+            const assunto = document.getElementById("Assunto").value;
+            const mensagem = document.getElementById("Mensagem").value;
+
+            const numero = "5516991589900";
+
+            let texto = `Olá, sou *${nome}*\n\n` +
+                        `*Assunto:* ${assunto}\n\n` +
+                        `*Email:* ${email}\n` +
+                        `*Telefone:* ${telefone}\n\n` +
+                        `*Mensagem:*\n${mensagem}`;
+
+            const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+
+            window.open(url, "_blank");
+        });
+    </script>
+}

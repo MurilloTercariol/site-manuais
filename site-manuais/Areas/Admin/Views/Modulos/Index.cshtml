@@ -47,7 +47,9 @@
                                 <tr>
                                     <td><strong>@item.Nome</strong></td>
                                     <td>
-                                        <span class="badge bg-info">@item.Categoria.Nome</span>
+                                        <span class="badge" style="background-color:@(item.Categoria?.Cor ?? "#888")">
+                                            @(item.Categoria?.Nome ?? "Sem categoria")
+                                        </span>
                                     </td>
                                     <td>@item.Descricao</td>
                                     <td>
@@ -73,15 +75,15 @@
                                         <div class="btn-group" role="group">
                                             <a asp-area="Admin" asp-action="Details" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-info" title="Ver Detalhes">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="bi bi-eye"></i> Detalhes
                                             </a>
                                             <a asp-area="Admin" asp-action="Edit" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-warning" title="Editar">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="bi bi-pencil"></i> Editar
                                             </a>
                                             <a asp-area="Admin" asp-action="Delete" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-danger" title="Deletar">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="bi bi-trash"></i> Deletar
                                             </a>
                                         </div>
                                     </td>

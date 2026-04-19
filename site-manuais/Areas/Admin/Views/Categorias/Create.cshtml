@@ -1,72 +1,131 @@
-﻿@model site_manuais.Models.Categoria
+@model site_manuais.Models.Categoria
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nova Categoria";
 }
 
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">
+                <i class="bi bi-folder-plus"></i> Nova Categoria
+            </h1>
+            <p class="text-muted">Crie uma nova categoria para organizar seus documentos</p>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-area="Admin" asp-controller="Categorias" asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Nome" class="form-label">Nome da Categoria *</label>
+                            <input asp-for="Nome" class="form-control" placeholder="Ex: Recursos Humanos, Financeiro, etc" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Descricao" class="form-label">Descrição (Opcional)</label>
+                            <textarea asp-for="Descricao" class="form-control" rows="3" 
+                                      placeholder="Descreva brevemente esta categoria..."></textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
 
-<div class="form-container">
-     <h1>EDITAR</h1>
-
-     <h4>Categoria</h4>
-     <hr/>
-     <div class="container-fluid px-0">
-
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="Cor" class="form-label">Cor da Categoria</label>
-                <div class="d-flex gap-5">
-                    <label>
-                        <input type="radio" asp-for="Cor" value="#cc0606" checked="@(Model?.Cor == "#cc0606")" />
-                        <span style="display:inline-block;width:24px;height:24px;background:#cc0606;border-radius:50%;border:2px solid #cccccc;"></span>
-                        Vermelho
-                    </label>
-                    <label>
-                        <input type="radio" asp-for="Cor" value="#0202a1" checked="@(Model?.Cor == "#0202a1")" />
-                        <span style="display:inline-block;width:24px;height:24px;background:#0202a1;border-radius:50%;border:2px solid #cccccc;"></span>
-                        Azul
-                    </label>
-                    <label>
-                        <input type="radio" asp-for="Cor" value="#0b6b04" checked="@(Model?.Cor == "#0b6b04")" />
-                        <span style="display:inline-block;width:24px;height:24px;background:#0b6b04;border-radius:50%;border:2px solid #cccccc;"></span>
-                        Verde
-                    </label>
-                    <label>
-                        <input type="radio" asp-for="Cor" value="#ff7f2a" checked="@(Model?.Cor == "#ff7f2a")" />
-                        <span style="display:inline-block;width:24px;height:24px;background:#ff7f2a;border-radius:50%;border:2px solid #cccccc;"></span>
-                        Laranja
-                    </label>
-                    <label>
-                        <input type="radio" asp-for="Cor" value="#520152" checked="@(Model?.Cor == "#520152")" />
-                        <span style="display:inline-block;width:24px;height:24px;background:#520152;border-radius:50%;border:2px solid #cccccc;"></span>
-                        Roxo
-                    </label>
+                        <div class="mb-3">
+                            <label asp-for="Cor" class="form-label">Cor da Categoria</label>
+                            <div class="d-flex gap-4 flex-wrap">
+                                <label class="color-option">
+                                    <input type="radio" asp-for="Cor" value="#cc0606" checked="@(Model?.Cor == "#cc0606")" />
+                                    <span class="color-circle" style="background:#cc0606;"></span>
+                                    Vermelho
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" asp-for="Cor" value="#0202a1" checked="@(Model?.Cor == "#0202a1")" />
+                                    <span class="color-circle" style="background:#0202a1;"></span>
+                                    Azul
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" asp-for="Cor" value="#0b6b04" checked="@(Model?.Cor == "#0b6b04")" />
+                                    <span class="color-circle" style="background:#0b6b04;"></span>
+                                    Verde
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" asp-for="Cor" value="#ff7f2a" checked="@(Model?.Cor == "#ff7f2a")" />
+                                    <span class="color-circle" style="background:#ff7f2a;"></span>
+                                    Laranja
+                                </label>
+                                <label class="color-option">
+                                    <input type="radio" asp-for="Cor" value="#520152" checked="@(Model?.Cor == "#520152")" />
+                                    <span class="color-circle" style="background:#520152;"></span>
+                                    Roxo
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-area="Admin" asp-controller="Categorias" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Criar Categoria
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Criar" class="btn btn-primary" />
-            </div>
-        </form>
-        <div>
-        <a asp-action="Index">Voltar</a>
         </div>
-     </div>
-   </div>
-</>
+        
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Dicas
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Escolha uma cor para identificar a categoria
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Use nomes descritivos como "Recursos Humanos"
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Adicione módulos após criar a categoria
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-
+<style>
+    .color-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+    .color-option input[type="radio"] {
+        display: none;
+    }
+    .color-option .color-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #cccccc;
+        transition: transform 0.2s;
+    }
+    .color-option input[type="radio"]:checked + .color-circle {
+        transform: scale(1.2);
+        border-color: #333;
+    }
+</style>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

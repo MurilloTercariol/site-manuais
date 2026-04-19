@@ -1,42 +1,124 @@
-﻿@model site_manuais.Models.Modulo
+@model site_manuais.Models.Modulo
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Módulo";
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4">
+                <i class="bi bi-grid-3x3"></i> Detalhes do Módulo
+            </h1>
+        </div>
+    </div>
 
-<div>
-    <h4>Modulo</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Categoria)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Categoria.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DataCriacao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DataCriacao)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">
+                        <i class="bi bi-folder2-open text-primary"></i>
+                        @Model.Nome
+                    </h3>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Descrição:</dt>
+                        <dd class="col-sm-9">@(Model.Descricao ?? "—")</dd>
+
+                        <dt class="col-sm-3">Categoria:</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge" style="background-color: @(Model.Categoria?.Cor ?? "#888");">
+                                <i class="bi bi-folder"></i>
+                                @(Model.Categoria?.Nome ?? "Sem categoria")
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-3">Data de Criação:</dt>
+                        <dd class="col-sm-9">
+                            <i class="bi bi-calendar-plus"></i>
+                            @Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+
+                        @if (Model.DataUltimaAlteracao.HasValue)
+                        {
+                            <dt class="col-sm-3">Última Alteração:</dt>
+                            <dd class="col-sm-9">
+                                <i class="bi bi-pencil-square"></i>
+                                @Model.DataUltimaAlteracao.Value.ToString("dd/MM/yyyy HH:mm")
+                            </dd>
+                        }
+
+                        <dt class="col-sm-3">Documentos:</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Documentos != null && Model.Documentos.Any())
+                            {
+                                <span class="badge bg-primary">@Model.Documentos.Count() documento(s)</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Nenhum documento cadastrado</span>
+                            }
+                        </dd>
+                    </dl>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                        <div>
+                            <a asp-area="Admin" asp-controller="Documentos" asp-action="Index" class="btn btn-info">
+                                <i class="bi bi-file-earmark-text"></i> Ver Documentos
+                            </a>
+                        </div>
+                        <div>
+                            <a asp-area="Admin" asp-controller="Modulos" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Voltar
+                            </a>
+                            <a asp-area="Admin" asp-controller="Modulos" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a asp-area="Admin" asp-controller="Modulos" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Deletar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Informações
+                    </h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Módulo criado em @Model.DataCriacao.ToString("dd/MM/yyyy")
+                        </li>
+                        @if (Model.DataUltimaAlteracao.HasValue)
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-pencil-square text-warning"></i>
+                                Última alteração em @Model.DataUltimaAlteracao.Value.ToString("dd/MM/yyyy HH:mm")
+                            </li>
+                        }
+                        @if (Model.Categoria != null)
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-folder" style="color: @Model.Categoria.Cor;"></i>
+                                Pertence à categoria "@Model.Categoria.Nome"
+                            </li>
+                        }
+                        @if (Model.Documentos != null && Model.Documentos.Any())
+                        {
+                            <li class="mb-2">
+                                <i class="bi bi-file-earmark-text text-primary"></i>
+                                Contém @Model.Documentos.Count() documento(s)
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

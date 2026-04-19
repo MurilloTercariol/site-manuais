@@ -51,10 +51,14 @@
                                         <strong>@item.Titulo</strong>
                                     </td>
                                     <td>
-                                        <span class="badge bg-primary">@item.Modulo.Nome</span>
+                                        <span class="badge"
+                                              style="background-color:@(item.Modulo.Categoria.Cor)">
+                                              @item.Modulo.Nome</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-info">@item.Modulo.Categoria.Nome</span>
+                                        <span class="badge"
+                                              style="background-color:@(item.Modulo.Categoria.Cor)">
+                                              @item.Modulo.Categoria.Nome</span>
                                     </td>
                                     <td>
                                         <small class="text-muted">
@@ -91,19 +95,19 @@
                                         <div class="btn-group" role="group">
                                             <a asp-area="Admin" asp-action="Download" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-success" title="Download">
-                                                <i class="bi bi-download"></i>
+                                                <i class="bi bi-download"></i> Download
                                             </a>
                                             <a asp-area="Admin" asp-action="Details" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-info" title="Ver Detalhes">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="bi bi-eye"></i> Detalhes
                                             </a>
                                             <a asp-area="Admin" asp-action="Edit" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-warning" title="Editar">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="bi bi-pencil"></i> Editar
                                             </a>
                                             <a asp-area="Admin" asp-action="Delete" asp-route-id="@item.Id" 
                                                class="btn btn-sm btn-danger" title="Deletar">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="bi bi-trash"></i> Deletar
                                             </a>
                                         </div>
                                     </td>
