@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=179.127.2.37,1433;Database=PROJETO_MURILLO;User=tz;Password=156450;Encrypt=true;TrustServerCertificate=true;Connection Timeout=30;MultipleActiveResultSets=true
+      - ASPNETCORE_ENVIRONMENT=Production
+    networks:
+      - site-network
+
+networks:
+  site-network:

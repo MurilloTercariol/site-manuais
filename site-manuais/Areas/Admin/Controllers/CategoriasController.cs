@@ -89,8 +89,12 @@ namespace site_manuais.Areas.Admin.Controllers
         }
 
         // POST: Admin/Categorias/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        //Verificar se categoria existe
+        private bool CategoriaExists(int id)
+        {
+            return _context.Categorias.Any(e => e.Id == id);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,DataCriacao,Cor")] Categoria categoria)
@@ -148,19 +152,25 @@ namespace site_manuais.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria != null)
+            var categoria = await _context.Categorias
+                .Include(c => c.Modulos)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (categoria == null)
             {
-                _context.Categorias.Remove(categoria);
+                return NotFound();
             }
 
+            if (categoria.Modulos != null && categoria.Modulos.Any())
+            {
+                ModelState.AddModelError("",
+                    $"Não é possível excluir. Esta categoria possui {categoria.Modulos.Count} módulo(s) associado(s).");
+                return View("Delete", categoria);
+            }
+
+            _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoriaExists(int id)
-        {
-            return _context.Categorias.Any(e => e.Id == id);
-        }
+        }     
     }
 }

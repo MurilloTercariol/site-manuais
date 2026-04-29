@@ -114,6 +114,12 @@ namespace site_manuais.Areas.Admin.Controllers
         // POST: Admin/Modulos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        //Verificar se existe
+        private bool ModuloExists(int id)
+        {
+            return _context.Modulos.Any(e => e.Id == id);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,CategoriaId,DataCriacao")] Modulo modulo)
@@ -176,19 +182,25 @@ namespace site_manuais.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var modulo = await _context.Modulos.FindAsync(id);
-            if (modulo != null)
+            var modulo = await _context.Modulos
+                .Include(c => c.Documentos)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (modulo == null)
             {
-                _context.Modulos.Remove(modulo);
+                return NotFound();
             }
 
+            if (modulo.Documentos != null && modulo.Documentos.Any())
+            {
+                ModelState.AddModelError("",
+                    $"Não é possível excluir. Esta categoria possui {modulo.Documentos.Count} módulo(s) associado(s).");
+                return View("Delete", modulo);
+            }
+
+            _context.Modulos.Remove(modulo);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ModuloExists(int id)
-        {
-            return _context.Modulos.Any(e => e.Id == id);
         }
     }
 }
