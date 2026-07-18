@@ -97,7 +97,7 @@ namespace site_manuais.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,DataCriacao,Cor")] Categoria categoria)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Cor")] Categoria categoria)
         {
             if (id != categoria.Id)
             {
@@ -108,9 +108,17 @@ namespace site_manuais.Areas.Admin.Controllers
             {
                 try
                 {
-                    categoria.DataUltimaAlteracao = DateTime.Now;
+                    // Busca a categoria original no banco
+                    var categoriaOriginal = await _context.Categorias.FindAsync(id);
+                    if (categoriaOriginal == null)
+                        return NotFound();
 
-                    _context.Update(categoria);
+                    // Atualiza apenas os campos editáveis
+                    categoriaOriginal.Nome = categoria.Nome;
+                    categoriaOriginal.Descricao = categoria.Descricao;
+                    categoriaOriginal.Cor = categoria.Cor;
+                    categoriaOriginal.DataUltimaAlteracao = DateTime.Now;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

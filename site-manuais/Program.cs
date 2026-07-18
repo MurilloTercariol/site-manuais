@@ -5,6 +5,12 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Pegar certificado
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Configure(context.Configuration.GetSection("Kestrel"));
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

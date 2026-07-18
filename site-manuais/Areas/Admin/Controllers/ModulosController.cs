@@ -111,10 +111,6 @@ namespace site_manuais.Areas.Admin.Controllers
             return View(modulo);
         }
 
-        // POST: Admin/Modulos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
         //Verificar se existe
         private bool ModuloExists(int id)
         {
@@ -122,7 +118,7 @@ namespace site_manuais.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,CategoriaId,DataCriacao")] Modulo modulo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,CategoriaId")] Modulo modulo)
         {
             if (id != modulo.Id)
             {
@@ -135,9 +131,15 @@ namespace site_manuais.Areas.Admin.Controllers
             {
                 try
                 {
-                    modulo.DataUltimaAlteracao = DateTime.Now;
+                    var moduloOriginal = await _context.Modulos.FindAsync(id);
+                    if (moduloOriginal == null)
+                        return NotFound();
+
+                    moduloOriginal.Nome = modulo.Nome;
+                    moduloOriginal.Descricao = modulo.Descricao;
+                    moduloOriginal.CategoriaId = modulo.CategoriaId;
+                    moduloOriginal.DataUltimaAlteracao = DateTime.Now;
                     
-                    _context.Update(modulo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
